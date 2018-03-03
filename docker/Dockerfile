@@ -21,4 +21,4 @@ WORKDIR /home/btcp/BitcoinPrivate
 RUN ./btcputil/build.sh -j$(nproc)
 RUN ./btcputil/fetch-params.sh
 
-ENTRYPOINT ["/home/btcp/BitcoinPrivate/src/btcp"]
+ENTRYPOINT ["/bin/bash"]
