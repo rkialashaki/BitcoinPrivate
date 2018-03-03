@@ -12,7 +12,7 @@ RUN mkdir /home/btcp/BitcoinPrivate
 RUN mkdir /home/btcp/.btcprivate
 COPY ./ /home/btcp/BitcoinPrivate
 COPY ./contrib/debian/examples/btcprivate.conf /home/btcp/.btcprivate/
-RUN cp -a /home/btcp/BitcoinPrivate/provingkeys/.zcash-params /home/btcp/
+RUN cp -a /home/btcp/BitcoinPrivate/docker/provingkeys/.zcash-params /home/btcp/
 RUN chown -R btcp:btcp /home/btcp
 
 USER btcp
