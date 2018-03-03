@@ -12,16 +12,16 @@ RUN mkdir /home/btcp/BitcoinPrivate
 RUN mkdir /home/btcp/.btcprivate
 COPY ./ /home/btcp/BitcoinPrivate
 COPY ./contrib/debian/examples/btcprivate.conf /home/btcp/.btcprivate/
-RUN cp -a /home/btcp/BitcoinPrivate/docker/provingkeys/.zcash-params /home/btcp/
-RUN cd /home/btcp/.btcprivate/ && \
-    curl https://s3.amazonaws.com/btcp.snapshot/utxo_snapshot.tar.gz |
-    tar xvz
+#RUN cp -a /home/btcp/BitcoinPrivate/docker/provingkeys/.zcash-params /home/btcp/
+#RUN cd /home/btcp/.btcprivate/ && \
+#    curl https://s3.amazonaws.com/btcp.snapshot/utxo_snapshot.tar.gz |
+#    tar xvz
 RUN chown -R btcp:btcp /home/btcp
 
 USER btcp
 WORKDIR /home/btcp/BitcoinPrivate
 
 RUN ./btcputil/build.sh -j$(nproc)
-#RUN ./btcputil/fetch-params.sh
+RUN ./btcputil/fetch-params.sh
 
 #ENTRYPOINT ["/bin/bash"]
