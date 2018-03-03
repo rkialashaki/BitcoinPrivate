@@ -6,19 +6,19 @@ RUN apt-get update && \
       autoconf libtool ncurses-dev unzip git python \
       zlib1g-dev wget bsdmainutils automake git vim sudo 
 RUN useradd -r -m -s /bin/bash -u 1000 btcp
-RUN touch /etc/sudoers.d/btcp && echo "wp ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/btcp
+RUN touch /etc/sudoers.d/btcp && echo "btcp ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/btcp
 
 RUN mkdir /home/btcp/BitcoinPrivate
 RUN mkdir /home/btcp/.btcprivate
 COPY ./ /home/btcp/BitcoinPrivate
 COPY ./contrib/debian/examples/btcprivate.conf /home/btcp/.btcprivate/
-RUN chown -R btcp:btcp /home/btcp/BitcoinPrivate
-RUN chown -R btcp:btcp /home/btcp/.btcprivate
+RUN cp -a /home/btcp/BitcoinPrivate/provingkeys/.zcash-params /home/btcp/
+RUN chown -R btcp:btcp /home/btcp
 
 USER btcp
 WORKDIR /home/btcp/BitcoinPrivate
 
 RUN ./btcputil/build.sh -j$(nproc)
-RUN ./btcputil/fetch-params.sh
+#RUN ./btcputil/fetch-params.sh
 
-ENTRYPOINT ["/bin/bash"]
+#ENTRYPOINT ["/bin/bash"]
