@@ -14,7 +14,8 @@ you must be in the docker directory to run the script:
 
 
 ```
-cd <path_to_BitcoinPrivate_src_dir>/docker/
+git clone https://github.com/rkialashaki/BitcoinPrivate
+cd BitcoinPrivate/docker/
 ./build.sh
 ``` 
 
