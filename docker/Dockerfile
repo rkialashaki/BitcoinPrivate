@@ -13,7 +13,7 @@ RUN apt-get update && \
 
 RUN mkdir /root/BitcoinPrivate
 RUN mkdir /root/.btcprivate
-RUN mkdir /root/.zcash-params
+#RUN mkdir /root/.zcash-params
 COPY ./ /root/BitcoinPrivate
 COPY ./contrib/debian/examples/btcprivate.conf /root/.btcprivate/
 
@@ -26,6 +26,8 @@ COPY ./contrib/debian/examples/btcprivate.conf /root/.btcprivate/
 WORKDIR /root/BitcoinPrivate
 
 RUN ./btcputil/build.sh -j$(nproc)
+RUN ln -s /root/BitcoinPrivate/src/btcpd /usr/local/bin/
+RUN ln -s /root/BitcoinPrivate/src/btcpd-cli /usr/local/bin/
 RUN ./btcputil/fetch-params.sh
 
 ## For strict entrypoint:
@@ -33,4 +35,4 @@ RUN ./btcputil/fetch-params.sh
 #CMD [""]
 
 ## For dev (allows /bin/bash and other command overrides
-CMD ["/root/BitcoinPrivate/src/btcpd"]
+CMD ["btcpd"]

@@ -34,7 +34,7 @@ VERSION=`cat ./VERSION`
 VOLUME="btcprivate_data:/root/.btcprivate"
 IMAGE="$PROJECT:$VERSION"
 PORTS="-p 7932:7932 -p 7933:7933"
-docker run --rm -it --name btcpdocker -v $VOLUME $PORTS $IMAGE
+docker run --rm -it --name $PROJECT -v $VOLUME $PORTS $IMAGE
 ```
 
 By default this will run the btcpd daemon. 
@@ -42,6 +42,15 @@ By default this will run the btcpd daemon.
 To run the btcpd-cli:
 
 ```
-docker exec -it btcpdocker /root/BitcoinPrivate/src/btcpd-cli listreceivedbyaddress 0 true
+#!/bin/bash
+PROJECT=`cat ./PROJECT`
+docker exec $PROJECT btcp-cli listreceivedbyaddress 0 true
 ```
 
+To get a bash shell to the container:
+
+```
+#!/bin/bash
+PROJECT=`cat ./PROJECT`
+docker exec -it $PROJECT /bin/bash
+```
