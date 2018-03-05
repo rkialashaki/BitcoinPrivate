@@ -1,21 +1,22 @@
-from ubuntu:17.10
+FROM ubuntu:17.10 as intermediate
 
 RUN apt-get update && \
     apt-get -y install \
       build-essential pkg-config libc6-dev m4 g++-multilib \
       autoconf libtool ncurses-dev unzip git python \
-      zlib1g-dev wget bsdmainutils automake git vim sudo curl 
-
+      zlib1g-dev wget bsdmainutils automake git vim sudo curl && \
+    apt-get clean
 ## If you would like to run the btpc daemon as another user:
 #RUN useradd -r -m -s /bin/bash -u 1000 btcp
 #RUN touch /etc/sudoers.d/btcp && echo "btcp ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/btcp
 #USER btcp
+#WORKDIR /home/btcp
+WORKDIR /root
 
-RUN mkdir /root/BitcoinPrivate
-RUN mkdir /root/.btcprivate
-#RUN mkdir /root/.zcash-params
-COPY ./ /root/BitcoinPrivate
-COPY ./contrib/debian/examples/btcprivate.conf /root/.btcprivate/
+#RUN mkdir -p BitcoinPrivate && mkdir -p .btcprivate
+#RUN mkdir .zcash-params
+COPY ./ BitcoinPrivate
+COPY ./contrib/debian/examples/btcprivate.conf .btcprivate/
 
 ## If you would like to include the btcp snapshot:
 ##RUN cd /home/btcp/.btcprivate/ && \
@@ -23,12 +24,17 @@ COPY ./contrib/debian/examples/btcprivate.conf /root/.btcprivate/
 ##    tar xvz
 #RUN chown -R btcp:btcp /home/btcp
 
-WORKDIR /root/BitcoinPrivate
+RUN ./BitcoinPrivate/btcputil/build.sh -j$(nproc) && \
+    ./BitcoinPrivate/btcputil/fetch-params.sh && \
+    cp BitcoinPrivate/src/btcpd /usr/local/bin/ && \
+    cp BitcoinPrivate/src/btcp-cli /usr/local/bin/ && \
+    rm -rf BitcoinPrivate && \
+    rm -rf .cargo .ccache 
 
-RUN ./btcputil/build.sh -j$(nproc)
-RUN ln -s /root/BitcoinPrivate/src/btcpd /usr/local/bin/
-RUN ln -s /root/BitcoinPrivate/src/btcpd-cli /usr/local/bin/
-RUN ./btcputil/fetch-params.sh
+FROM ubuntu:17.10
+WORKDIR /root
+COPY --from=intermediate / /
+#COPY --from=intermediate .btcprivate .btcprivate
 
 ## For strict entrypoint:
 #ENTRYPOINT ["/root/BitcoinPrivate/src/btcpd"]
